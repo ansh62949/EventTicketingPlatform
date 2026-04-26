@@ -17,6 +17,7 @@ import java.util.List;
 public class CreateEventRequest {
 
     private String name;
+    private String description;
     private LocalDateTime start;
     private LocalDateTime end;
     private String venue;
@@ -24,5 +25,6 @@ public class CreateEventRequest {
     private LocalDateTime salesEnd;
     private EventStatuEnum status;   // ✅ fixed name
     private List<CreateTicketTypeRequest> ticketTypes = new ArrayList<>();
+    private String imageUrl;
 }
 

@@ -3,20 +3,19 @@ package com.example.EventTicketingPlatform.Controllers;
 import com.example.EventTicketingPlatform.Mappers.TicketMapper;
 import com.example.EventTicketingPlatform.Services.QrCodeService;
 import com.example.EventTicketingPlatform.Services.TicketService;
+import com.example.EventTicketingPlatform.domain.dtos.BookTicketRequest;
 import com.example.EventTicketingPlatform.domain.dtos.GetTicketResponseDto;
 import com.example.EventTicketingPlatform.domain.dtos.ListTicketResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -40,6 +39,16 @@ public class TicketController {
         UUID userId = parserUserId(jwt);
         return ticketService.listTicketsForUser(userId, pageable)
                 .map(ticketMapper::toListTicketResponseDto);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void purchaseTicket(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody BookTicketRequest request
+    ) {
+        UUID userId = parserUserId(jwt);
+        ticketService.bookTicket(userId, request.getTicketTypeId(), request.getQuantity());
     }
 
     // Get details of a specific ticket

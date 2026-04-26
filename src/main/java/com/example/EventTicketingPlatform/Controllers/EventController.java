@@ -23,7 +23,7 @@ import static util.JwtUtil.parserUserId;
 @RestController
 @RequestMapping(path = "/api/v1/events")
 @RequiredArgsConstructor
-public class EventController {
+public class EventController{
 
     private final EventMapper eventMapper;
     private final EventService eventService;
@@ -63,7 +63,7 @@ public class EventController {
             Pageable pageable
     ) {
         UUID userId = parserUserId(jwt);
-        Page<Event> events = eventService.listEventForOrganizer(userId, pageable);
+        Page<Event> events = eventService.listEventsForOrganizer(userId, pageable);
         return ResponseEntity.ok(events.map(eventMapper::toListEventResponseDto));
     }
 

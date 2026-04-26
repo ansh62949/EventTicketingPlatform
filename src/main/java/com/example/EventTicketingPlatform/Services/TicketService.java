@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface TicketService {
     Page<Ticket> listTicketsForUser(UUID userId, Pageable pageable);
     Optional<Ticket> getTicketForUser(UUID userId, UUID ticketId);
+    void bookTicket(UUID userId, UUID ticketTypeId, int quantity);
 }

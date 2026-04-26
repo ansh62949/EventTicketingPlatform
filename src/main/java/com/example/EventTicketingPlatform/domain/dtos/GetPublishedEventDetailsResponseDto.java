@@ -18,5 +18,7 @@ public class GetPublishedEventDetailsResponseDto {
     private LocalDateTime start;
     private LocalDateTime end;
     private String venue;
+    private String description;
+    private String imageUrl;
     private List<GetPublishedEventDetailsTicketTypesResponseDto> ticketTypes = new ArrayList<>();
 }

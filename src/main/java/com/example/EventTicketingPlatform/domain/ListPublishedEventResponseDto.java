@@ -16,4 +16,7 @@ public class ListPublishedEventResponseDto {
     private LocalDateTime start;
     private LocalDateTime end;
     private String venue;
+    private String imageUrl;
+    private Double minPrice;
+    private String category;
 }

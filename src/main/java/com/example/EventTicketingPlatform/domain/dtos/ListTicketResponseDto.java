@@ -13,5 +13,9 @@ import java.util.UUID;
 public class ListTicketResponseDto {
     private UUID id;
     private TicketStatusEnum status;
-    private ListTicketTicketTypeResponseDto ticketType;
+    private String eventName;
+    private java.time.LocalDateTime eventDate;
+    private String venue;
+    private String eventImageUrl;
+    private String type;
 }

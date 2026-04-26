@@ -48,6 +48,7 @@ public class EventServiceImpl implements EventService {
                 }).toList();
 
         eventToCreate.setName(event.getName());
+        eventToCreate.setDescription(event.getDescription());
         eventToCreate.setStart(event.getStart());
         eventToCreate.setEnd(event.getEnd());
         eventToCreate.setVenue(event.getVenue());
@@ -56,11 +57,13 @@ public class EventServiceImpl implements EventService {
         eventToCreate.setStatus(event.getStatus());
         eventToCreate.setOrganizer(organizer);
         eventToCreate.setTicketTypes(ticketTypesToCreate);
+        eventToCreate.setImageUrl(event.getImageUrl());
 
         return eventRepository.save(eventToCreate);
     }
 
     @Override
+    @Transactional
     public Page<Event> listEventsForOrganizer(UUID organizerId, Pageable pageable) {
         return eventRepository.findByOrganizerId(organizerId, pageable);
     }
@@ -157,11 +160,4 @@ public class EventServiceImpl implements EventService {
     public Optional<Event> getPublishedEvent(UUID id) {
         return eventRepository.findByIdAndStatus(id, EventStatuEnum.PUBLISHED);
     }
-
-    @Override
-    public Page<Event> listEventForOrganizer(UUID userId, Pageable pageable) {
-        return null;
-    }
-
-
 }

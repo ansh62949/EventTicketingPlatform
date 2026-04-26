@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+body {
+    @apply bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0B2447] text-white font-sans antialiased selection:bg-blue-500/30 min-h-screen;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-lg transition-all duration-300 hover:bg-white/20;
+  }
+
+  .glass-input {
+    @apply bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all text-white placeholder-white/40;
+  }
+  
+  .btn-glass {
+    @apply bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300 hover:bg-white/30 active:scale-95;
+  }
+
+  .btn-cta {
+    @apply bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 active:scale-95;
+  }
+
+  .text-subtext {
+    @apply text-gray-300;
+  }
+
+  .glow-blue {
+    @apply absolute blur-3xl bg-blue-500/20 rounded-full;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-[#0B0F1A];
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-white/20;
+}

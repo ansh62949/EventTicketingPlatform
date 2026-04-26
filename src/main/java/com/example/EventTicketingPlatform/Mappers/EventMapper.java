@@ -49,7 +49,19 @@ public interface EventMapper {
 
     UpdateEventResponseDto toUpdateEventResponseDto(Event event);
 
+    @org.mapstruct.Mapping(target = "minPrice", expression = "java(calculateMinPrice(event))")
+    @org.mapstruct.Mapping(target = "category", constant = "Music")
     ListPublishedEventResponseDto toListPublishedEventResponseDto(Event event);
+
+    default Double calculateMinPrice(Event event) {
+        if (event.getTicketTypes() == null || event.getTicketTypes().isEmpty()) {
+            return 0.0;
+        }
+        return event.getTicketTypes().stream()
+                .mapToDouble(TicketType::getPrice)
+                .min()
+                .orElse(0.0);
+    }
 
     GetPublishedEventDetailsTicketTypesResponseDto toGetPublishedEventDetailsTicketTypesResponseDto(
             TicketType ticketType);

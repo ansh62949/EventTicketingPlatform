@@ -5,6 +5,8 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "events")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,6 +30,9 @@ public class Event {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "description", length = 2000)
+    private String description;
 
     @Column(name = "event_start")
     private LocalDateTime start;
@@ -59,6 +65,9 @@ public class Event {
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<TicketType> ticketTypes = new ArrayList<>();
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
 
     @CreatedDate

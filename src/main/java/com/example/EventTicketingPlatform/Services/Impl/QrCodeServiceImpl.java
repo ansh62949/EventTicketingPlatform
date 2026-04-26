@@ -45,7 +45,9 @@ public class QrCodeServiceImpl implements QrCodeService {
             qrCode.setStatus(QrCodeStatusEnum.ACTIVE);
             qrCode.setValue(qrCodeImage);
             qrCode.setTicket(ticket);
-
+            qrCode.setCreatedAt(java.time.LocalDateTime.now());
+            qrCode.setUpdatedAt(java.time.LocalDateTime.now());
+            
             return qrCodeRepository.saveAndFlush(qrCode);
 
         } catch(IOException | WriterException ex) {
