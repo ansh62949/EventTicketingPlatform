@@ -31,7 +31,7 @@ public class TicketController {
     private final QrCodeService qrCodeService;
 
     // List tickets for the authenticated user
-    @GetMapping
+    @GetMapping("/my-tickets")
     public Page<ListTicketResponseDto> listTickets(
             @AuthenticationPrincipal Jwt jwt,
             Pageable pageable
@@ -52,7 +52,7 @@ public class TicketController {
     }
 
     // Get details of a specific ticket
-    @GetMapping(path = "/{ticketId}")
+    @GetMapping(path = "/{ticketId:[0-9a-fA-F\\-]{36}}")
     public ResponseEntity<GetTicketResponseDto> getTicket(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable UUID ticketId
@@ -65,7 +65,7 @@ public class TicketController {
     }
 
     // Get QR code image for a ticket
-    @GetMapping(path = "/{ticketId}/qr-codes")
+    @GetMapping(path = "/{ticketId:[0-9a-fA-F\\-]{36}}/qr-codes")
     public ResponseEntity<byte[]> getTicketQrCode(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable UUID ticketId
