@@ -10,6 +10,7 @@ public class EventTicketingPlatformApplication {
 
 	public static void main(String[] args) {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Kolkata"));
+		System.setProperty("java.awt.headless", "true");
 		SpringApplication.run(EventTicketingPlatformApplication.class, args);
 	}
 
