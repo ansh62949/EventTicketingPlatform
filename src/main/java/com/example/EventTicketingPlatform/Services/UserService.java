@@ -21,7 +21,7 @@ public class UserService {
 
     public User registerUser(String name, String email, String password, String role) {
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new IllegalArgumentException("Email already exists");
         }
 
         com.example.EventTicketingPlatform.domain.Entities.UserRole userRole;
