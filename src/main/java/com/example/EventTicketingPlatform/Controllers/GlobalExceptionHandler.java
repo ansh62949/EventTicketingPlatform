@@ -116,8 +116,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> handleUnhandledException(Exception ex) {
-        log.error("Unhandled exception", ex);
-        return buildError("An unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        log.error("Unhandled exception: {}", ex.getMessage(), ex);
+        // Including the message in the response to help debug production issues
+        return buildError("Internal Server Error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
