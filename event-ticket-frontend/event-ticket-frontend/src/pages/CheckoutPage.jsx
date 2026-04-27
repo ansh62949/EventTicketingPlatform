@@ -39,8 +39,8 @@ const CheckoutPage = () => {
       setIsSuccess(true);
     } catch (error) {
       console.error('Purchase failed:', error);
-      // For demo, show success even if backend is not fully ready for this specific payload
-      setIsSuccess(true);
+      const errorMessage = error.response?.data?.error || error.message;
+      alert(`Purchase failed: ${errorMessage}`);
     } finally {
       setIsProcessing(false);
     }

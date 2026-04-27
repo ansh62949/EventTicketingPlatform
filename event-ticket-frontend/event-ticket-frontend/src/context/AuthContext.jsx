@@ -33,6 +33,10 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const authData = await authService.login(credentials);
+      if (!authData || !authData.token) {
+        throw new Error("Invalid response from security vault");
+      }
+      
       const { token, user: userData } = authData;
       
       localStorage.setItem('token', token);
@@ -48,13 +52,14 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const authData = await authService.signup(userData);
-      const { token, user: registeredUser } = authData;
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(registeredUser));
-      setUser(registeredUser);
-      
-      return registeredUser;
+      if (authData && authData.token) {
+        const { token, user: registeredUser } = authData;
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(registeredUser));
+        setUser(registeredUser);
+        return registeredUser;
+      }
+      return authData;
     } catch (error) {
       throw error;
     }
