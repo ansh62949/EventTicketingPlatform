@@ -47,8 +47,14 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const registrationResponse = await authService.signup(userData);
-      return registrationResponse;
+      const authData = await authService.signup(userData);
+      const { token, user: registeredUser } = authData;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(registeredUser));
+      setUser(registeredUser);
+      
+      return registeredUser;
     } catch (error) {
       throw error;
     }

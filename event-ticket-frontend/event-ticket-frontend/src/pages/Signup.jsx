@@ -19,7 +19,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       await register(formData);
-      navigate('/login');
+      navigate('/events');
     } catch (error) {
       if (error.response?.status === 409) {
         alert("User already exists");

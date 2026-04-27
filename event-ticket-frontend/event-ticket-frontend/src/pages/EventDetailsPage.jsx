@@ -17,7 +17,7 @@ const EventDetailsPage = () => {
         // Explicitly check if ID is valid
         if (!id) throw new Error("No event ID provided");
         
-        const response = await API.get(`/published-events/${id}`);
+        const response = await API.get(`/api/v1/published-events/${id}`);
         const eventData = response.data;
         setEvent(eventData);
       } catch (error) {

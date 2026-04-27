@@ -7,7 +7,7 @@ function Home() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    API.get("/published-events")
+    API.get("/api/v1/published-events")
       .then((res) => {
         if (Array.isArray(res.data)) {
           setEvents(res.data);
