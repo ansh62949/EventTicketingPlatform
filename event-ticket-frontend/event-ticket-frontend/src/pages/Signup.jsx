@@ -21,6 +21,11 @@ const Signup = () => {
       await register(formData);
       navigate('/login');
     } catch (error) {
+      if (error.response?.status === 409) {
+        alert("User already exists");
+      } else {
+        alert("Something went wrong");
+      }
       console.error('Registration failed:', error);
     }
   };

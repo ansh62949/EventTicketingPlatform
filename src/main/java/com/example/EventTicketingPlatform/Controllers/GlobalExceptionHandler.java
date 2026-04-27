@@ -114,6 +114,13 @@ public class GlobalExceptionHandler {
 
 
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorDto> handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.error("Illegal argument: {}", ex.getMessage());
+        HttpStatus status = ex.getMessage().contains("exists") ? HttpStatus.CONFLICT : HttpStatus.BAD_REQUEST;
+        return buildError(ex.getMessage(), status);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> handleUnhandledException(Exception ex) {
         log.error("Unhandled exception: {}", ex.getMessage(), ex);
