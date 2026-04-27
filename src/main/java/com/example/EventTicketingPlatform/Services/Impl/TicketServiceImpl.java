@@ -51,10 +51,12 @@ public class TicketServiceImpl implements TicketService {
             ticket.setStatus(TicketStatusEnum.PURCHASED);
             ticket.setCreatedAt(LocalDateTime.now());
             ticket.setUpdatedAt(LocalDateTime.now());
-            Ticket savedTicket = ticketRepository.save(ticket);
             
-            // Generate QR Code for the ticket
-            qrCodeService.generateQrCode(savedTicket);
+            // Generate the QR Code object without saving it yet
+            QrCode qrCode = qrCodeService.generateQrCodeObject(ticket);
+            ticket.getQrCodes().add(qrCode);
+            
+            ticketRepository.save(ticket);
         }
     }
 }

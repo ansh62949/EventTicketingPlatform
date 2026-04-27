@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public interface QrCodeService {
     QrCode generateQrCode(Ticket ticket);
+    QrCode generateQrCodeObject(Ticket ticket);
 
     byte[] getQrcodeImageForUserAndTicket(UUID userId,UUID ticketId);
 }

@@ -36,6 +36,12 @@ public class QrCodeServiceImpl implements QrCodeService {
 
     @Override
     public QrCode generateQrCode(Ticket ticket) {
+        QrCode qrCode = generateQrCodeObject(ticket);
+        return qrCodeRepository.saveAndFlush(qrCode);
+    }
+
+    @Override
+    public QrCode generateQrCodeObject(Ticket ticket) {
         try {
             UUID uniqueId = UUID.randomUUID();
             String qrCodeImage = generateQrCodeImage(uniqueId);
@@ -48,7 +54,7 @@ public class QrCodeServiceImpl implements QrCodeService {
             qrCode.setCreatedAt(java.time.LocalDateTime.now());
             qrCode.setUpdatedAt(java.time.LocalDateTime.now());
             
-            return qrCodeRepository.saveAndFlush(qrCode);
+            return qrCode;
 
         } catch(IOException | WriterException ex) {
             throw new QrCodeGenerationException("Failed to generate QR Code", ex);
