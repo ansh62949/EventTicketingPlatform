@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import API from '../services/api';
+import { eventService } from '../services/eventService';
 import EventCard from '../components/EventCard';
-import { Search, SlidersHorizontal, MapPin, Sparkles, Loader2, Navigation } from 'lucide-react';
+import { Search, SlidersHorizontal, MapPin, Sparkles, Loader2, Navigation, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const EventsPage = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [userCity, setUserCity] = useState('Global');
@@ -15,11 +16,20 @@ const EventsPage = () => {
   const categories = ['All', 'Music', 'Tech', 'Arts', 'Sports'];
 
   useEffect(() => {
-    const initDiscovery = async () => {
-      await fetchEvents();
-      detectLocation();
+    const initializeDiscovery = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const eventData = await eventService.getPublishedEvents();
+        setEvents(eventData);
+        detectLocation();
+      } catch (err) {
+        setError("Unable to retrieve discovery feed. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
     };
-    initDiscovery();
+    initializeDiscovery();
   }, []);
 
   const detectLocation = async () => {
@@ -30,11 +40,11 @@ const EventsPage = () => {
       try {
         const { latitude, longitude } = position.coords;
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
-        const data = await response.json();
-        const city = data.address.city || data.address.town || data.address.state || 'India';
+        const locationData = await response.json();
+        const city = locationData.address.city || locationData.address.town || locationData.address.state || 'India';
         setUserCity(city);
-      } catch (error) {
-        // Silent fail for location detection
+      } catch (err) {
+        // Location detection failure is handled gracefully
       } finally {
         setLocating(false);
       }
@@ -43,28 +53,28 @@ const EventsPage = () => {
     });
   };
 
-  const fetchEvents = async () => {
-    try {
-      setLoading(true);
-      const response = await API.get('/published-events');
-      setEvents(response.data.content || response.data);
-    } catch (error) {
-      setEvents([
-        { id: '1', name: 'Mumbai Tech Summit 2026', start: '2026-10-15T10:00:00', venue: 'Jio World Centre, Mumbai', imageUrl: 'https://images.unsplash.com/photo-1540575861501-7ad05823c9f5?q=80&w=1200', price: 450, category: 'Tech' },
-        { id: '2', name: 'Bangalore Music Festival', start: '2026-11-20T18:00:00', venue: 'Manyata Tech Park, Bangalore', imageUrl: 'https://images.unsplash.com/photo-1459749411177-042180ce673c?q=80&w=1200', price: 1200, category: 'Music' },
-        { id: '3', name: 'Delhi Art Expo', start: '2026-09-05T09:00:00', venue: 'Pragati Maidan, New Delhi', imageUrl: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=1200', price: 300, category: 'Arts' },
-        { id: '4', name: 'Goa Beach Rave', start: '2026-12-31T20:00:00', venue: 'Anjuna Beach, Goa', imageUrl: 'https://images.unsplash.com/photo-1514525253361-bee8718a300c?q=80&w=1200', price: 2500, category: 'Music' },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || event.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-8">
+        <div className="bg-orange-500/10 border border-orange-500/20 p-8 rounded-[2rem] text-center max-w-md">
+           <AlertCircle className="text-orange-500 mx-auto mb-4" size={48} />
+           <p className="text-white font-bold mb-4">{error}</p>
+           <button 
+             onClick={() => window.location.reload()}
+             className="text-orange-500 text-xs font-black uppercase tracking-widest hover:underline"
+           >
+             Refresh Discovery Feed
+           </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#121212] pb-40">

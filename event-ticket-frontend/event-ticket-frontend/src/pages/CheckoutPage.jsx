@@ -32,7 +32,7 @@ const CheckoutPage = () => {
       // We use a fallback UUID if ticketTypeId is missing for some reason
       const tId = ticketTypeId || "5f488d15-7b6d-46ec-8ee5-56b34922b165"; 
 
-      await API.post('/tickets', {
+      await API.post('/api/v1/tickets', {
         ticketTypeId: tId,
         quantity: quantity
       });

@@ -12,7 +12,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import API from '../services/api';
+import { eventService } from '../services/eventService';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -47,15 +47,14 @@ const CreateEventPage = () => {
 
       const eventStart = formatDateTime(formData.start);
       const eventEnd = formatDateTime(formData.end);
-      const salesStart = new Date().toISOString().slice(0, 19);
 
-      const payload = {
+      const eventPayload = {
         name: formData.name,
         description: formData.description || "No description provided.",
         venue: formData.venue,
         start: eventStart,
         end: eventEnd,
-        salesStart: salesStart,
+        salesStart: new Date().toISOString().slice(0, 19),
         salesEnd: eventStart,
         status: "PUBLISHED",
         imageUrl: formData.imageUrl || presets[0].url,
@@ -69,7 +68,7 @@ const CreateEventPage = () => {
         ]
       };
 
-      await API.post('/events', payload);
+      await eventService.createEvent(eventPayload);
       navigate('/dashboard');
     } catch (error) {
       const serverMsg = error.response?.data?.message || error.response?.data?.error || "Unknown error";

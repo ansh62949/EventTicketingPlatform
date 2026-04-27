@@ -19,7 +19,7 @@ const StaffScanPage = () => {
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // In a real app, call the API
-      // const response = await API.post('/ticket-validations', { ticketId: id });
+      // const response = await API.post('/api/v1/ticket-validations', { ticketId: id });
       // setScanResult(response.data);
       
       // MOCK RESULT

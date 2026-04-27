@@ -1,24 +1,25 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import API from '../services/api';
+import { authService } from '../services/authService';
 
 const AuthContext = createContext();
 
+/**
+ * Provider component that managed the global authentication state.
+ * Interfaces with the AuthService for network operations.
+ */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Check for existing session
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuthSession = () => {
       const token = localStorage.getItem('token');
       const savedUser = localStorage.getItem('user');
       
       if (token && savedUser) {
         try {
-          // You could optionally verify the token with the backend here
           setUser(JSON.parse(savedUser));
         } catch (e) {
-          console.error("Failed to parse saved user", e);
           localStorage.removeItem('token');
           localStorage.removeItem('user');
         }
@@ -26,32 +27,29 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     };
     
-    checkAuth();
+    checkAuthSession();
   }, []);
 
   const login = async (credentials) => {
     try {
-      // Backend expects: email, password
-      const response = await API.post('/auth/login', credentials);
-      const { token, user: userData } = response.data;
+      const authData = await authService.login(credentials);
+      const { token, user: userData } = authData;
       
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
       
-      return userData; // Return user data for redirection in the component
+      return userData;
     } catch (error) {
-      console.error('Login failed:', error);
-      throw error; // Let the component handle the error UI
+      throw error;
     }
   };
 
   const register = async (userData) => {
     try {
-      const response = await API.post('/auth/register', userData);
-      return response.data;
+      const registrationResponse = await authService.signup(userData);
+      return registrationResponse;
     } catch (error) {
-      console.error('Registration failed:', error);
       throw error;
     }
   };

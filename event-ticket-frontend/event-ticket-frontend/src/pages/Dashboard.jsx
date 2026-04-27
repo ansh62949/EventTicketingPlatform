@@ -10,16 +10,18 @@ import {
   Plus,
   Loader2,
   Calendar,
-  MapPin
+  MapPin,
+  AlertCircle
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import API from '../services/api';
+import { eventService } from '../services/eventService';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [events, setEvents] = useState([]);
+  const [error, setError] = useState(null);
+  const [managedEvents, setManagedEvents] = useState([]);
   const [stats, setStats] = useState([
     { title: 'Total Revenue', value: '$0.00', trend: '0%', icon: DollarSign },
     { title: 'Tickets Sold', value: '0', trend: '0%', icon: TicketIcon },
@@ -27,12 +29,13 @@ const Dashboard = () => {
   ]);
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchDashboardTelemetry = async () => {
       try {
         setLoading(true);
-        const response = await API.get('/events');
-        const eventData = response.data.content || response.data;
-        setEvents(eventData);
+        setError(null);
+        
+        const eventData = await eventService.getManagedEvents();
+        setManagedEvents(eventData);
 
         const totalRevenue = eventData.reduce((acc, ev) => acc + (ev.ticketTypes?.[0]?.price || 0), 0);
         
@@ -41,14 +44,31 @@ const Dashboard = () => {
           { title: 'Managed Events', value: eventData.length.toString(), trend: 'Active', icon: TicketIcon },
           { title: 'Network Pulse', value: '100%', trend: 'Stable', icon: Zap },
         ]);
-      } catch (error) {
-        // Silent fail for production-style telemetry
+      } catch (err) {
+        setError("Failed to synchronize with experience vault. Please check your connection.");
       } finally {
         setLoading(false);
       }
     };
-    fetchDashboardData();
+    fetchDashboardTelemetry();
   }, []);
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-8">
+        <div className="bg-red-500/10 border border-red-500/20 p-8 rounded-[2rem] text-center max-w-md">
+           <AlertCircle className="text-red-500 mx-auto mb-4" size={48} />
+           <p className="text-white font-bold mb-4">{error}</p>
+           <button 
+             onClick={() => window.location.reload()}
+             className="text-red-500 text-xs font-black uppercase tracking-widest hover:underline"
+           >
+             Retry Synchronization
+           </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#121212] pb-40">
@@ -106,12 +126,13 @@ const Dashboard = () => {
            </div>
 
            {loading ? (
-             <div className="flex flex-col items-center justify-center py-10">
+             <div className="flex flex-col items-center justify-center py-20">
                <Loader2 className="animate-spin text-orange-500" size={32} />
+               <p className="text-[10px] font-black uppercase tracking-widest text-white/20 mt-4">Retrieving Managed experiences...</p>
              </div>
            ) : (
              <div className="grid grid-cols-1 gap-6">
-                {events.map((event) => (
+                {managedEvents.map((event) => (
                   <motion.div 
                     key={event.id}
                     initial={{ opacity: 0, y: 10 }}
@@ -156,7 +177,7 @@ const Dashboard = () => {
                   </motion.div>
                 ))}
 
-                {events.length === 0 && (
+                {!loading && managedEvents.length === 0 && (
                   <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-[3rem]">
                     <p className="text-[10px] font-black uppercase tracking-widest text-white/20">No experiences initialized yet</p>
                     <button 
