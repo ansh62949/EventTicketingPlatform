@@ -82,7 +82,3 @@ EVENTIX utilizes a unique design language characterized by:
 - **Glassmorphism**: Translucent headers and navigation nodes using `backdrop-blur-xl`.
 - **Telemetry Aesthetic**: Monospaced typography and tracking for technical data points.
 
----
-
-## ⚖️ License
-Internal Development // System Integrity Nominal
